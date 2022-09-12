@@ -12,6 +12,8 @@ plugins {
 
     // Apply the java-library plugin for API and implementation separation.
     `java-library`
+    `maven-publish`
+
 }
 
 repositories {
@@ -39,5 +41,17 @@ dependencies {
 
     // Use the Kotlin JUnit integration.
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = "com.cyberpython"
+            artifactId = "kotcot"
+            version = "1.0.0"
+
+            from(components["java"])
+        }
+    }
 }
 
