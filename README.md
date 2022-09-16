@@ -1,5 +1,7 @@
 # kotcot
 
+[![](https://jitpack.io/v/cyberpython/kotcot.svg)](https://jitpack.io/#cyberpython/kotcot)
+
 **Kot**lin **C**ursor-**o**n-**T**arget (CoT) library.
 
 KotCoT can parse the base CoT v2.0 event as well as extract values from the `detail` extension node.
@@ -17,3 +19,4 @@ specify fields to be used as attributes in the generated XML, you need to create
 (data classes are recommended) annotated with Jackson's annotations.
 
 The CoT Event XSD schema that the development of the library is based on can be found under `/doc/`.
+
