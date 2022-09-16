@@ -1,6 +1,7 @@
 package com.cyberpython.kotcot
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.annotation.JsonInclude.Include
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
@@ -71,6 +72,7 @@ class CoT {
             mapper.enable(SerializationFeature.INDENT_OUTPUT)
             mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
             mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+            mapper.setSerializationInclusion(Include.NON_EMPTY);
         }
     }
 

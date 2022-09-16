@@ -9,6 +9,8 @@
 plugins {
     // Apply the org.jetbrains.kotlin.jvm Plugin to add support for Kotlin.
     id("org.jetbrains.kotlin.jvm") version "1.5.31"
+    
+    id("jacoco")
 
     // Apply the java-library plugin for API and implementation separation.
     `java-library`
@@ -43,12 +45,20 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
 }
 
+tasks.test {
+    finalizedBy(tasks.jacocoTestReport) // report is always generated after tests run
+}
+
+jacoco {
+    toolVersion = "0.8.8"
+}
+
 publishing {
     publications {
         create<MavenPublication>("maven") {
             groupId = "com.cyberpython"
             artifactId = "kotcot"
-            version = "1.0.0"
+            version = "1.0.1"
 
             from(components["java"])
         }
