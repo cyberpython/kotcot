@@ -72,7 +72,7 @@ class CoT {
             mapper.enable(SerializationFeature.INDENT_OUTPUT)
             mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
             mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-            mapper.setSerializationInclusion(Include.NON_EMPTY);
+            mapper.setSerializationInclusion(Include.NON_NULL);
         }
     }
 
