@@ -1,5 +1,6 @@
 # kotcot
-
+![Build](https://github.com/cyberpython/kotcot/actions/workflows/main.yml/badge.svg)
+![Coverage](.github/badges/jacoco.svg)
 [![](https://jitpack.io/v/cyberpython/kotcot.svg)](https://jitpack.io/#cyberpython/kotcot)
 
 **Kot**lin **C**ursor-**o**n-**T**arget (CoT) library.
