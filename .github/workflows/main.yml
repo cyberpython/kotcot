@@ -4,12 +4,15 @@ jobs:
   Explore-GitHub-Actions:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
       - name: Build and test
         uses: actions/checkout@v3
+      - name: Setup JDK
         uses: actions/setup-java@v3
         with:
           java-version: '18'
           distribution: 'temurin'
+      - name: Build and test with Gradle
         run: ./gradlew clean build --no-daemon
       - name: Generate JaCoCo Badge
         uses: cicirello/jacoco-badge-generator@v2
