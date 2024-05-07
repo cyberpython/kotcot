@@ -1,9 +1,14 @@
+@file:Suppress("unused")
+
 package com.cyberpython.kotcot
 
+import com.ctc.wstx.stax.WstxInputFactory
+import com.ctc.wstx.stax.WstxOutputFactory
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonInclude.Include
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.dataformat.xml.XmlFactory
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
@@ -15,17 +20,44 @@ import java.time.ZonedDateTime
 
 @JacksonXmlRootElement(localName = "event")
 data class Event(
-        @JsonProperty(required = true) val point : Point,
-        val detail: Any?,
-        @JacksonXmlProperty(isAttribute = true) @JsonProperty(required = true) val version: Int = 2,
-        @JacksonXmlProperty(isAttribute = true) @JsonProperty(required = true) val type: String,
-        @JacksonXmlProperty(isAttribute = true) val access: String?,
-        @JacksonXmlProperty(isAttribute = true) val qos: String?, // TODO: replace with QoS data class
-        @JacksonXmlProperty(isAttribute = true) @JsonProperty(required = true) val uid: String,
-        @JacksonXmlProperty(isAttribute = true) @JsonProperty(required = true) val time: ZonedDateTime,
-        @JacksonXmlProperty(isAttribute = true) @JsonProperty(required = true) val start: ZonedDateTime,
-        @JacksonXmlProperty(isAttribute = true) @JsonProperty(required = true) val stale: ZonedDateTime,
-        @JacksonXmlProperty(isAttribute = true) @JsonProperty(required = true) val how: String
+    @JsonProperty(required = true)
+    val point : Point,
+
+    val detail: Any?,
+
+    @JacksonXmlProperty(isAttribute = true)
+    @JsonProperty(required = true)
+    val version: Int = 2,
+
+    @JacksonXmlProperty(isAttribute = true)
+    @JsonProperty(required = true)
+    val type: String,
+
+    @JacksonXmlProperty(isAttribute = true)
+    val access: String?,
+
+    @JacksonXmlProperty(isAttribute = true)
+    val qos: String?, // TODO: replace with QoS data class
+
+    @JacksonXmlProperty(isAttribute = true)
+    @JsonProperty(required = true)
+    val uid: String,
+
+    @JacksonXmlProperty(isAttribute = true)
+    @JsonProperty(required = true)
+    val time: ZonedDateTime,
+
+    @JacksonXmlProperty(isAttribute = true)
+    @JsonProperty(required = true)
+    val start: ZonedDateTime,
+
+    @JacksonXmlProperty(isAttribute = true)
+    @JsonProperty(required = true)
+    val stale: ZonedDateTime,
+
+    @JacksonXmlProperty(isAttribute = true)
+    @JsonProperty(required = true)
+    val how: String
 ){
     init {
         require(version >= 2) { "Version must be greater than 2." }
@@ -35,28 +67,44 @@ data class Event(
     }
 
     fun getDetail(detailProperty: String): String {
+        @Suppress("UNCHECKED_CAST")
         var currentProp = detail as Map<String, Any>
         val props = detailProperty.split(".")
         val lastProp =  props.last()
         props.dropLast(1).forEach{
-            prop -> run {
-                if(currentProp.containsKey(prop)) {
-                    currentProp = currentProp[prop] as Map<String, Any>
-                } else {
-                    throw IllegalArgumentException("Invalid property: $detailProperty")
-                }
+                prop -> run {
+            if(currentProp.containsKey(prop)) {
+                @Suppress("UNCHECKED_CAST")
+                currentProp = currentProp[prop] as Map<String, Any>
+            } else {
+                throw IllegalArgumentException("Invalid property: $detailProperty")
             }
+        }
         }
         return currentProp[lastProp] as String
     }
 }
 
 data class Point(
-    @JacksonXmlProperty(isAttribute = true) @JsonProperty(required = true) val lat: Double,
-    @JacksonXmlProperty(isAttribute = true) @JsonProperty(required = true) val lon: Double,
-    @JacksonXmlProperty(isAttribute = true) @JsonProperty(required = true) val hae: Double,
-    @JacksonXmlProperty(isAttribute = true) @JsonProperty(required = true) val ce: Double,
-    @JacksonXmlProperty(isAttribute = true) @JsonProperty(required = true) val le: Double,
+    @JacksonXmlProperty(isAttribute = true)
+    @JsonProperty(required = true)
+    val lat: Double,
+
+    @JacksonXmlProperty(isAttribute = true)
+    @JsonProperty(required = true)
+    val lon: Double,
+
+    @JacksonXmlProperty(isAttribute = true)
+    @JsonProperty(required = true)
+    val hae: Double,
+
+    @JacksonXmlProperty(isAttribute = true)
+    @JsonProperty(required = true)
+    val ce: Double,
+
+    @JacksonXmlProperty(isAttribute = true)
+    @JsonProperty(required = true)
+    val le: Double,
 ){
     init {
         require(lat >= -90.0 && lat <= 90.0) { "Latitude must be between -90.0 and 90.0." }
@@ -67,12 +115,21 @@ data class Point(
 class CoT {
 
     companion object {
-        val mapper = XmlMapper().registerModule(JavaTimeModule()).registerKotlinModule()
+        val mapper = XmlFactory.builder()
+            .xmlInputFactory(WstxInputFactory())
+            .xmlOutputFactory(WstxOutputFactory())
+            .build().let {
+                XmlMapper
+                    .builder(it)
+                    .build()
+                    .registerModule(JavaTimeModule())
+                    .registerKotlinModule()
+            }
         init{
             mapper.enable(SerializationFeature.INDENT_OUTPUT)
             mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
             mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-            mapper.setSerializationInclusion(Include.NON_NULL);
+            mapper.setSerializationInclusion(Include.NON_NULL)
         }
     }
 
@@ -84,14 +141,14 @@ class CoT {
         return mapper.writeValue(f, e)
     }
 
-    fun parse(xml : String) : Event{
+    fun parse(xml : String) : Event {
         return mapper.readValue(xml)
     }
 
-    fun parse(xml : File) : Event{
+    fun parse(xml : File) : Event {
         return mapper.readValue(xml)
     }
-    
+
 }
 
 class CoTType2SIDC {

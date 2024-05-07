@@ -8,7 +8,7 @@
 
 plugins {
     // Apply the org.jetbrains.kotlin.jvm Plugin to add support for Kotlin.
-    id("org.jetbrains.kotlin.jvm") version "1.5.31"
+    id("org.jetbrains.kotlin.jvm") version "1.9.23"
     
     id("jacoco")
 
@@ -23,6 +23,8 @@ repositories {
     mavenCentral()
 }
 
+val jackVersion = "2.17.1"
+
 dependencies {
     // Align versions of all Kotlin components
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
@@ -30,13 +32,14 @@ dependencies {
     // Use the Kotlin JDK 8 standard library.
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
-    implementation("com.fasterxml.jackson.core:jackson-core:2.13.0")
-    implementation("com.fasterxml.jackson.core:jackson-annotations:2.13.0")
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.13.0")
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.3")
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.13.0")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.0")
+    implementation("com.fasterxml.jackson.core:jackson-core:$jackVersion")
+    implementation("com.fasterxml.jackson.core:jackson-annotations:$jackVersion")
+    implementation("com.fasterxml.jackson.core:jackson-databind:$jackVersion")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jackVersion")
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:$jackVersion")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jackVersion")
     implementation("com.fasterxml.woodstox:woodstox-core:6.2.5")
+    api("javax.xml.stream:stax-api:1.0-2")
 
     // Use the Kotlin test library.
     testImplementation("org.jetbrains.kotlin:kotlin-test")
@@ -66,7 +69,7 @@ publishing {
         create<MavenPublication>("maven") {
             groupId = "com.cyberpython"
             artifactId = "kotcot"
-            version = "1.0.2"
+            version = "1.0.3"
 
             from(components["java"])
         }
